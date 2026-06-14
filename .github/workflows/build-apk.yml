@@ -1,0 +1,47 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:   # Allows manual trigger from GitHub UI
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'   # Stable recent version as of 2026 context; update if needed
+          channel: 'stable'
+
+      - name: Ensure platform folders exist (generates android/ if missing)
+        run: flutter create . --platforms android
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: virtual-pet-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
+
+      - name: Rename for easy download
+        run: |
+          mv build/app/outputs/flutter-apk/app-release.apk virtual-pet-whale-cow-snake.apk
+
+      - name: Upload renamed APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bubbles-Virtual-Pet-APK
+          path: virtual-pet-whale-cow-snake.apk
+          retention-days: 30

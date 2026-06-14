@@ -1,0 +1,62 @@
+name: virtual_pet_app
+description: "Cross-platform virtual pet app (Whale / Cow / Snake) with persistent state and RAG memory."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State management (Riverpod as recommended)
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # Persistence & paths (plan uses ObjectBox for vector/RAG; start with file+JSON for immediate runnability + easy migration)
+  path_provider: ^2.1.4
+  # objectbox: ^4.0.1   # Uncomment + run build_runner after adding for full on-device vector DB
+  # objectbox_generator: ^4.0.1
+
+  # Time & formatting
+  intl: ^0.19.0
+
+  # Animations (Rive recommended in plan for state-driven cute pets; placeholder until assets added)
+  # rive: ^0.13.20
+
+  # Game layer (Flame if complex interactions/minigames added later)
+  # flame: ^1.18.0
+
+  # Navigation (optional upgrade)
+  # go_router: ^14.2.0
+
+  # Future: on-device LLM / embeddings (flutter_gemma or equivalent for true RAG)
+  # Add when ready; start with in-memory mock retrieval + rule-based "LLM"
+
+  # Enhancements per UI/UX spec
+  vibration: ^1.8.0          # Haptic feedback for grooming (purr/contentment)
+  audioplayers: ^5.2.1       # Soft melodic sound on growth transitions (add assets later)
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+  # Codegen
+  build_runner: ^2.4.12
+  riverpod_generator: ^2.4.0
+  # objectbox_generator: ^4.0.1   # For ObjectBox entities
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    # Add Rive files here once created: assets/rive/pet_whale.riv etc.
+    # - assets/rive/
+    - assets/images/
+    - assets/data/
+
+  # Example fonts or other as needed later

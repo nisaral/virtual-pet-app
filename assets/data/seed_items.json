@@ -1,0 +1,6 @@
+{
+  "comment": "Seed data for items, foods, cosmetics per pet type. Load in future expansion of inventory system.",
+  "basic": [
+    {"id": "basic_food", "name": "Basic Treat", "effect": {"hunger": -20}}
+  ]
+}
