@@ -9,6 +9,7 @@ import 'package:virtual_pet_app/features/pet/data/datasources/local_pet_datasour
 import 'package:virtual_pet_app/features/pet/application/pet_simulator.dart';
 import 'package:virtual_pet_app/features/pet/application/memory_rag_service.dart';
 import 'package:virtual_pet_app/core/utils/time_simulator.dart';
+import 'package:virtual_pet_app/core/utils/vector_utils.dart';
 import 'package:uuid/uuid.dart';
 
 const _uuid = Uuid();
@@ -148,6 +149,9 @@ class PetController extends AsyncNotifier<PetState> {
       level: 1,
       xp: 0,
       evolutionStage: 'baby',
+      growthStage: 0,
+      growthProgress: 0.0,
+      interactionCount: 1,
       isSleeping: false,
       inventory: [{'itemId': 'basic_food', 'quantity': 5}],
       unlockedCosmetics: [],

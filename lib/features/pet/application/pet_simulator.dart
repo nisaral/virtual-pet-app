@@ -39,13 +39,13 @@ class PetSimulator {
 
     // Base deltas (positive = improvement). Tune per action/type.
     Map<String, double> deltas = switch (action) {
-      'feed' => {'hunger': -35, 'happiness': +8, 'affection': +5},
-      'play' => {'happiness': +25, 'energy': -12, 'affection': +10},
-      'clean' => {'cleanliness': -40, 'happiness': +12, 'affection': +4},
-      'pet' => {'happiness': +15, 'affection': +18, 'energy': +3},
-      'talk' => {'happiness': +10, 'affection': +12},
-      'groom' => {'hygiene': -30, 'happiness': +18, 'affection': +8}, // Grooming is core for growth
-      _ => {'happiness': +5},
+      'feed' => {'hunger': -35, 'happiness': 8, 'affection': 5},
+      'play' => {'happiness': 25, 'energy': -12, 'affection': 10},
+      'clean' => {'cleanliness': -40, 'happiness': 12, 'affection': 4},
+      'pet' => {'happiness': 15, 'affection': 18, 'energy': 3},
+      'talk' => {'happiness': 10, 'affection': 12},
+      'groom' => {'hygiene': -30, 'happiness': 18, 'affection': 8}, // Grooming is core for growth
+      _ => {'happiness': 5},
     };
 
     // Bonus if action matches pet preference
