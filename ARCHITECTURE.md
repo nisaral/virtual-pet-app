@@ -1,6 +1,94 @@
-# Virtual Pet App - Architecture (Updated 2026-06-14)
+# Virtual Pet App - Architecture (Updated post-phone testing, 2026-06-14)
 
-This document captures the evolved vision from the original plan + the detailed Visual/Graphics + Core Feature specs provided by the user.
+This document captures the evolved vision from the original plan + the detailed Visual/Graphics + Core Feature specs + the post-testing pivot to 3D interactive simulation (Unity + Flutter hybrid) provided by the user after successful APK testing on phone.
+
+**Status**: Current MVP is polished Flutter prototype (claymation 2D with full logic, RAG, haptics, growth, grooming, thoughts, etc.) that builds and runs on Android. Pivot to full 3D is next phase. All logic (PetState, simulator, RAG, milestones) is portable to Unity embedding.
+
+## Visual & Graphics Strategy (Current Flutter + Unity Future)
+
+**Current (Flutter APK - successful phone build):**
+- **Claymation / Soft 3D aesthetic** implemented procedurally with `CustomPainter` + implicit animations, squash/stretch, procedural lighting/shadows (time-of-day), depth-of-field blur on habitat, emotional states (shake for low hygiene, contextual idle sway vs bounce based on last memory).
+- No asset placeholders: fully code-driven "toon" look.
+- **Growth "Morph" approximation**: `growthProgress` (0.0 baby → 1.0 adult) lerps proportions (now tied to grooming/care quality + hard min 35 real days).
+- **Interactive Grooming Scene**: Tap zones on pet (raycast simulation) for active care.
+- **Dynamic Living Space**: Time-of-day backgrounds + early environmental events.
+- Species have distinct shapes + details.
+- Haptics on groom (medium + light for high contentment).
+- Micro-animations: 2.5s elastic growth morph, bouncy thought pop-ins.
+- Stats via behavior (not just bars).
+
+**Pivot to 3D (Unity + flutter_unity_widget - recommended for high-fidelity):**
+- **The Engine**: Switch core pet/habitat rendering to Unity. Use `flutter_unity_widget` to embed the 3D Unity scene inside the existing Flutter shell (Flutter for menus, Supabase auth, RAG memory persistence, chat overlays; Unity for pet + environment).
+- **Animations**: Use Unity **Blend Trees** (not separate models). Blend between "idle", "sad", "playing", "groomed" based on pet's mood/stats/growthProgress (drive from Flutter via messages or shared state).
+- **Environments**: Do not hardcode. Create **Environment Prefabs** (3D Pond for whale, Pasture for cow, Cave for snake). Swap prefab on species/evolution or milestone unlocks. Dynamic lighting/weather from real device time + API.
+- **Art Style**: Claymation/Soft 3D + Toon Shader in Unity (warm, hand-crafted). Use Blender for base model + **Blend Shapes/Morph Targets** for Baby/Juvenile/Adult (drive single `growthPercentage` 0-1 float).
+- **Why Unity**: Native blend shapes, excellent 3D tooling, Timeline for state-driven animations, easy raycasting for interactions, particle systems for gifts/feedback. Original plan noted Unity strength for rich visuals vs Flutter.
+- **Integration**: Flutter shell remains (Riverpod state, local JSON/Supabase, RAG). Send stat changes from Unity to Flutter (and vice versa) via the widget bridge. Current CustomPainter PetVisual can be fallback or 2D "journal" view.
+
+Current Flutter version is a high-fidelity 2D prototype that validates all logic and runs on phone. Use it to prototype mini-games/UI before full Unity port.
+
+## Core Feature Specifications (Post-Testing Pivot)
+
+### Redesigning Interaction (Active Care Loop - No Button Bloat)
+- **Contextual Interaction**: Integrate directly into 3D/habitat view. Taps/gestures on pet launch contextual actions or mini-games. No isolated "Talk" page.
+  - **Microphone for Talking**: Enable mic access. Speech near phone → pet reacts in 3D (head tilt, look at camera) + RAG memory update + floating thought response.
+  - **Integrated Mini-Games** (happen in the 3D habitat, update stats directly):
+    - **Target Catch (Whale/Orca)**: User touches/drags to guide whale to catch falling stars/bubbles. Increases Happiness. (Flutter prototype: gesture-driven particle catcher; later Unity scene with Blend Tree "swim" anim).
+    - **Weed Pull (Cow)**: Tap/drag weeds out of pasture to clean. Increases Cleanliness/Hygiene. (Flutter: drag-to-remove widgets overlaid on habitat; later Unity raycast on 3D weeds).
+    - **Maze Chase (Snake)**: Draw path for snake to reach treat. Improves Energy. (Flutter: simple path drawing + AI follow; later Unity navmesh).
+  - These replace button presses; actions feed the care loop, RAG, and growth milestones.
+
+### Rethinking the "Evolution" Flow (Discovery Path)
+- **Milestone Unlocks with Agency**: Not auto/linear (Cow→Snake→Whale). Hit interaction milestone (e.g., grooming-focused) → award "Evolution Key".
+  - Choice UI: Pick next environment/species to unlock (gives player agency).
+  - Persistent Personality: RAG memories influence "DNA" (e.g., past "stressed" memories bias future mood/animations even after evolution).
+- Overlay "thought" as floating bubble in 3D (not buried in journal). Keep full RAG.
+
+### Interactive Mini-Games (Integrated into the Habitat)
+- As above: Target Catch, Weed Pull, Maze Chase - direct in 3D scene (gestures on Unity view or Flutter overlay during transition).
+- Rewards feed stats + gift system.
+
+### New Interactive Features
+- **Floating Thought Bubbles**: LLM/RAG "pet thoughts" appear as subtle 3D floating bubbles over the pet (tap to "hear" full response or update memory). Immediate and visual (no separate page).
+- **Real-time Environmental Events** (device clock + API):
+  - Nighttime: Environment dims, fireflies (cow) or bioluminescent lights (whale).
+  - Weather: If raining in real location (geolocator + weather API), rain in 3D pasture/pond.
+- **"Gift" System**: Mini-games award "found" items (shells for whale, flowers for cow). User "gives" them to pet to decorate 3D habitat (visual changes: shells on pond floor, flowers in pasture). Persistent via inventory in PetState + Unity prefab swaps or particle effects.
+
+### The "Active" Care Loop + Growth
+- Growth still milestone + care-quality (heavy on grooming) + min 35 real days.
+- All interactions (games, gifts, mic) directly update stats/mood/RAG without menu bloat.
+- Environment swaps on evolution/species for "rearing" feel.
+
+## Database & Architecture (Portable to Unity)
+**Current MVP (Flutter, successful phone build)**: Local JSON + all new features (mini-games, gifts, events, floating thoughts, gesture interactions).
+
+**Unity Hybrid**:
+- Flutter shell: Menus, Supabase (auth/RBAC/shared_state for multiplayer), RAG persistence, LLM thoughts (generate in Flutter, send to Unity for bubble display).
+- Unity: 3D pet/habitat with Blend Trees, prefabs, raycast games, gifts as 3D objects.
+- Bridge: flutter_unity_widget for embedding + message passing (stats ↔ animations, gifts ↔ decorations).
+- Data model (PetState) extended for: unlockedEnvironments, giftsInventory, currentEnvironmentId, lastWeather.
+
+See new UNITY_SETUP.md for Unity-side (Blender morphs, blend trees, prefabs, message protocol).
+
+**Multiplayer (Future)**: Shared state in Supabase; Unity scenes sync via Flutter bridge.
+
+## Current Implementation Status & Migration Path
+- All prior logic (growth on grooming, RAG thoughts, haptics, emotional UI, micro-anims, etc.) preserved and enhanced.
+- **Flutter Prototypes**: Mini-games, floating bubbles, environmental events, gifts implemented as overlays/gestures on current habitat view (ready to swap for Unity).
+- **To Pivot**:
+  1. Set up Unity project (export Android/iOS libs).
+  2. Add `flutter_unity_widget` + embed UnityView (replace/enhance PetVisual).
+  3. Port environments to prefabs, animations to Blend Trees driven by Flutter stats.
+  4. Move mini-games to Unity (raycast/gestures).
+  5. Overlay floating thoughts + gifts as Unity objects.
+  6. CI: Build Unity export + Flutter (complex; may need separate Unity Cloud Build).
+
+Current code is the validated "soul" (RAG, care loop, personality). Unity adds the "body" (3D fidelity).
+
+Enjoy the phone-tested prototype - now let's make the 3D leap! 
+
+For your girlfriend: Current APK has the enhanced clay pet with all core features. Unity version will be next APK after migration.
 
 ## Visual & Graphics Strategy (Implemented + Future)
 

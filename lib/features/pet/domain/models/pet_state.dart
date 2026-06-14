@@ -48,6 +48,11 @@ class PetState {
   final double growthProgress; // 0.0 to 1.0 - drives blend/morph in visuals
   final int interactionCount; // total successful care actions for milestone growth
 
+  // For Unity pivot + new features (Discovery Path, gifts, environments - post-phone testing)
+  final String currentEnvironment; // e.g. "pond", "pasture", "cave" - swap prefabs
+  final List<String> gifts; // e.g. ["shell", "flower"] from mini-games for 3D decorations
+  final List<String> unlockedEnvironments; // for evolution choices (Discovery Path)
+
   final bool isSleeping;
   final List<Map<String, dynamic>> inventory; // simple [{itemId, quantity}]
   final List<String> unlockedCosmetics;
@@ -72,6 +77,9 @@ class PetState {
     int? growthStage,
     double? growthProgress,
     int? interactionCount,
+    String? currentEnvironment,
+    List<String>? gifts,
+    List<String>? unlockedEnvironments,
     bool? isSleeping,
     List<Map<String, dynamic>>? inventory,
     List<String>? unlockedCosmetics,
@@ -94,6 +102,9 @@ class PetState {
       growthStage: growthStage ?? this.growthStage,
       growthProgress: growthProgress ?? this.growthProgress,
       interactionCount: interactionCount ?? this.interactionCount,
+      currentEnvironment: currentEnvironment ?? this.currentEnvironment,
+      gifts: gifts ?? this.gifts,
+      unlockedEnvironments: unlockedEnvironments ?? this.unlockedEnvironments,
       isSleeping: isSleeping ?? this.isSleeping,
       inventory: inventory ?? this.inventory,
       unlockedCosmetics: unlockedCosmetics ?? this.unlockedCosmetics,
@@ -124,6 +135,9 @@ class PetState {
         'xp': xp,
         'evolutionStage': evolutionStage,
         'interactionCount': interactionCount,
+        'currentEnvironment': currentEnvironment,
+        'gifts': gifts,
+        'unlockedEnvironments': unlockedEnvironments,
         'isSleeping': isSleeping,
         'inventory': inventory,
         'unlockedCosmetics': unlockedCosmetics,
@@ -151,6 +165,9 @@ class PetState {
       growthStage: (statsMap['growth_stage'] ?? json['growthStage'] ?? 0) as int,
       growthProgress: ((statsMap['growth_progress'] ?? json['growthProgress'] ?? 0.0) as num).toDouble(),
       interactionCount: (json['interactionCount'] ?? 0) as int,
+      currentEnvironment: (json['currentEnvironment'] ?? 'pond') as String,
+      gifts: ((json['gifts'] as List?) ?? []).cast<String>(),
+      unlockedEnvironments: ((json['unlockedEnvironments'] as List?) ?? []).cast<String>(),
       isSleeping: (json['isSleeping'] ?? false) as bool,
       inventory: ((json['inventory'] as List?) ?? []).cast<Map<String, dynamic>>(),
       unlockedCosmetics: ((json['unlockedCosmetics'] as List?) ?? []).cast<String>(),

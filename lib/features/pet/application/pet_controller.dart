@@ -93,6 +93,9 @@ class PetController extends AsyncNotifier<PetState> {
       growthStage: 0, // baby
       growthProgress: 0.0,
       interactionCount: 1, // the adoption counts as first interaction
+      currentEnvironment: 'pond', // default for whale; swap on evolution choice
+      gifts: [],
+      unlockedEnvironments: ['pond'],
       isSleeping: false,
       inventory: [
         {'itemId': 'basic_food', 'quantity': 3},
@@ -152,6 +155,9 @@ class PetController extends AsyncNotifier<PetState> {
       growthStage: 0,
       growthProgress: 0.0,
       interactionCount: 1,
+      currentEnvironment: 'pasture',
+      gifts: [],
+      unlockedEnvironments: ['pasture'],
       isSleeping: false,
       inventory: [{'itemId': 'basic_food', 'quantity': 5}],
       unlockedCosmetics: [],
@@ -161,6 +167,17 @@ class PetController extends AsyncNotifier<PetState> {
 
     state = AsyncValue.data(fresh);
     await _repo.savePet(fresh);
+  }
+
+  /// Gift system (post-testing spec): award from mini-games for 3D habitat decorations (Unity prefabs).
+  /// Awards persist in PetState.gifts and can decorate environment (visual stub in current clay painter).
+  Future<void> awardGift(String giftId) async {
+    final current = state.value;
+    if (current == null) return;
+    final updatedGifts = [...current.gifts, giftId];
+    final updated = current.copyWith(gifts: updatedGifts);
+    state = AsyncValue.data(updated);
+    await _repo.savePet(updated);
   }
 
   /// Force a "time jump" for testing offline progression (dev helper).

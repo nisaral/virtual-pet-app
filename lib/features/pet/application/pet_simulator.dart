@@ -129,6 +129,9 @@ class PetSimulator {
       growthStage: newGrowthStage,
       growthProgress: newGrowthProgress.clamp(0.0, 1.0),
       interactionCount: newInteractionCount,
+      currentEnvironment: current.currentEnvironment,
+      gifts: current.gifts,
+      unlockedEnvironments: current.unlockedEnvironments,
       memories: [...current.memories, memory],
     );
 

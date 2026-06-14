@@ -36,9 +36,17 @@ dependencies:
   # Future: on-device LLM / embeddings (flutter_gemma or equivalent for true RAG)
   # Add when ready; start with in-memory mock retrieval + rule-based "LLM"
 
-  # Enhancements per UI/UX spec
-  # vibration removed to avoid v1 embedding compile error (use built-in HapticFeedback instead - already wired in code)
-  audioplayers: ^6.0.0       # Soft melodic sound on growth transitions (add assets later)
+  # Enhancements per UI/UX spec (post-phone testing pivot to 3D)
+  # vibration removed (use built-in HapticFeedback - already in grooming code)
+  audioplayers: ^6.0.0       # Sounds for mini-games/growth (add assets later)
+
+  # For Unity pivot (3D pet + habitat embedding)
+  # flutter_unity_widget: ^0.2.0  # Embed Unity 3D scene (requires separate Unity export + flutter_unity_widget setup)
+  # See UNITY_SETUP.md and ARCHITECTURE.md for blend trees, prefabs, message bridge.
+
+  # For real-time weather events (stub for now; enable with API key)
+  # geolocator: ^11.0.0
+  # http: ^1.0.0  # for weather API calls (e.g., openweathermap)
 
 dev_dependencies:
   flutter_test:
