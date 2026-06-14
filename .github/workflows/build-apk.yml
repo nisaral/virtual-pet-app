@@ -20,7 +20,7 @@ jobs:
           channel: 'stable'
 
       - name: Ensure platform folders exist (generates android/ if missing)
-        run: flutter create . --platforms android
+        run: flutter create . --platforms android --project-name virtual_pet_app
 
       - name: Get dependencies
         run: flutter pub get
