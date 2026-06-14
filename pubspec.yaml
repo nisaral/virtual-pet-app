@@ -37,8 +37,8 @@ dependencies:
   # Add when ready; start with in-memory mock retrieval + rule-based "LLM"
 
   # Enhancements per UI/UX spec
-  vibration: ^1.8.0          # Haptic feedback for grooming (purr/contentment)
-  audioplayers: ^5.2.1       # Soft melodic sound on growth transitions (add assets later)
+  vibration: ^1.8.4          # Haptic feedback for grooming (purr/contentment) - specific version for compatibility
+  audioplayers: ^6.0.0       # Soft melodic sound on growth transitions (add assets later)
 
 dev_dependencies:
   flutter_test:

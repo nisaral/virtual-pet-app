@@ -30,6 +30,16 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Upgrade packages (to get compatible plugin versions and avoid v1 embedding issues)
+        run: flutter pub upgrade
+
+      - name: Patch NDK version in generated build files (for plugins requiring NDK 27)
+        run: |
+          # For .kts (Kotlin DSL, used by newer Flutter)
+          sed -i 's/ndkVersion = ".*"/ndkVersion = "27.0.12077973"/g' android/app/build.gradle.kts || true
+          # For .gradle (Groovy DSL)
+          sed -i 's/ndkVersion .*/ndkVersion "27.0.12077973"/g' android/app/build.gradle || true
+
       - name: Build release APK
         run: flutter build apk --release
 
