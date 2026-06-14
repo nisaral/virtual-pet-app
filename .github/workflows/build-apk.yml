@@ -33,12 +33,15 @@ jobs:
       - name: Upgrade packages (to get compatible plugin versions and avoid v1 embedding issues)
         run: flutter pub upgrade
 
-      - name: Patch NDK version in generated build files (for plugins requiring NDK 27)
+      - name: Patch NDK version (force 27 for audioplayers/vibration/path_provider etc. - they declare 27)
         run: |
-          # For .kts (Kotlin DSL, used by newer Flutter)
-          sed -i 's/ndkVersion = ".*"/ndkVersion = "27.0.12077973"/g' android/app/build.gradle.kts || true
-          # For .gradle (Groovy DSL)
-          sed -i 's/ndkVersion .*/ndkVersion "27.0.12077973"/g' android/app/build.gradle || true
+          # Patch .kts (most common with recent Flutter)
+          sed -i '/ndkVersion/c\    ndkVersion = "27.0.12077973"' android/app/build.gradle.kts || true
+          # Patch .gradle if present
+          sed -i '/ndkVersion/c\    ndkVersion "27.0.12077973"' android/app/build.gradle || true
+          # Fallback replace any old NDK strings
+          sed -i 's/26\.3\.[0-9]*/27.0.12077973/g' android/app/build.gradle.kts || true
+          sed -i 's/26\.3\.[0-9]*/27.0.12077973/g' android/app/build.gradle || true
 
       - name: Build release APK
         run: flutter build apk --release

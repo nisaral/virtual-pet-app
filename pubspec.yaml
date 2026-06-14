@@ -37,7 +37,7 @@ dependencies:
   # Add when ready; start with in-memory mock retrieval + rule-based "LLM"
 
   # Enhancements per UI/UX spec
-  vibration: ^1.8.4          # Haptic feedback for grooming (purr/contentment) - specific version for compatibility
+  # vibration removed to avoid v1 embedding compile error (use built-in HapticFeedback instead - already wired in code)
   audioplayers: ^6.0.0       # Soft melodic sound on growth transitions (add assets later)
 
 dev_dependencies:
