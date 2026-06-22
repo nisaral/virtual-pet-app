@@ -22,6 +22,9 @@ class PetState {
     required this.growthStage,
     required this.growthProgress, // 0.0 baby -> 1.0 adult (morph target value)
     required this.interactionCount, // for milestone-based growth
+    required this.currentEnvironment,
+    required this.gifts,
+    required this.unlockedEnvironments,
     required this.isSleeping,
     required this.inventory,
     required this.unlockedCosmetics,

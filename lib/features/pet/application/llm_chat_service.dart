@@ -2,6 +2,8 @@ import 'package:virtual_pet_app/features/pet/domain/models/pet_state.dart';
 import 'package:virtual_pet_app/features/pet/application/memory_rag_service.dart';
 import 'package:virtual_pet_app/features/pet/domain/models/pet_type_config.dart';
 import 'package:virtual_pet_app/features/pet/domain/models/pet_type.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 /// Very lightweight "LLM" chat service for MVP.
 /// Uses RAG-retrieved memories + current stats + personality prompt to produce
@@ -10,11 +12,22 @@ import 'package:virtual_pet_app/features/pet/domain/models/pet_type.dart';
 /// When ready for real RAG: replace _generateMockReply with call to
 /// flutter_gemma (or cloud) using the exact prompt returned by buildPrompt().
 class LLMChatService {
+  // OpenRouter key from environment variable - NEVER hardcode secrets!
+  static String get _openRouterKey {
+    final key = const String.fromEnvironment('OPENROUTER_API_KEY', defaultValue: '');
+    if (key.isEmpty) {
+      // Fallback to mock if no key provided
+      return '';
+    }
+    return key;
+  }
+
   /// Main entry: given user message + current pet state, return pet's reply + used memories.
-  static ({String reply, List<String> usedMemorySnippets}) generateReply({
+  /// Now uses real OpenRouter LLM (free model) with RAG context.
+  static Future<({String reply, List<String> usedMemorySnippets})> generateReply({
     required PetState pet,
     required String userMessage,
-  }) {
+  }) async {
     final config = PetTypeConfig.forType(pet.petType);
     final relevant = MemoryRAGService.retrieveRelevant(
       allMemories: pet.memories,
@@ -37,10 +50,57 @@ User just said: "$userMessage"
 Reply in 1-3 short, cute, in-character sentences. Reference one memory naturally if it fits. Stay true to personality. End with a small question or affection sometimes.
 ''';
 
-    final reply = _generateMockReply(pet, userMessage, relevant, config);
+    final reply = await _callOpenRouter(prompt);
     final snippets = relevant.map((m) => m.text).toList();
 
     return (reply: reply, usedMemorySnippets: snippets);
+  }
+
+  static Future<String> _callOpenRouter(String prompt) async {
+    const url = 'https://openrouter.ai/api/v1/chat/completions';
+    const model = 'meta-llama/llama-3.2-3b-instruct:free'; // free model on OpenRouter
+
+    final key = _openRouterKey;
+    if (key.isEmpty) {
+      // Fallback to mock if no API key configured
+      return _generateMockReplyFallback(prompt);
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $key',
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://virtual-pet-app.example.com', // optional
+          'X-Title': 'Virtual Pet App',
+        },
+        body: jsonEncode({
+          'model': model,
+          'messages': [
+            {'role': 'user', 'content': prompt}
+          ],
+          'max_tokens': 150,
+          'temperature': 0.8,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['choices'][0]['message']['content'].trim();
+      } else {
+        // fallback to mock on error
+        return _generateMockReplyFallback(prompt);
+      }
+    } catch (e) {
+      return _generateMockReplyFallback(prompt);
+    }
+  }
+
+  static String _generateMockReplyFallback(String prompt) {
+    // simple fallback if API fails
+    if (prompt.toLowerCase().contains('hungry')) return "I'm a bit peckish, human. Something tasty would be nice.";
+    return "The currents feel calm today. Thanks for checking on me.";
   }
 
   // Rule + template based "generation" that feels smart thanks to RAG context.

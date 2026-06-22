@@ -48,6 +48,12 @@ dependencies:
   # geolocator: ^11.0.0
   # http: ^1.0.0  # for weather API calls (e.g., openweathermap)
 
+  # 3D models support (for user-provided .glb animal models)
+  model_viewer_plus: ^1.8.0
+
+  # For real LLM via OpenRouter (user provided keys)
+  http: ^1.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -66,5 +72,7 @@ flutter:
     # - assets/rive/
     - assets/images/
     - assets/data/
+    - assets/models/   # 3D .glb models (whale.glb, cow_small.glb, cow_big.glb, etc.)
+    - assets/sounds/   # Action sounds, ADHD mini-game sounds (calming tones, etc.)
 
   # Example fonts or other as needed later

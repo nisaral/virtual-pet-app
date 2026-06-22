@@ -5,6 +5,18 @@ import 'package:flutter/services.dart'; // for HapticFeedback
 import 'package:virtual_pet_app/features/pet/domain/models/pet_state.dart';
 import 'package:virtual_pet_app/features/pet/domain/models/pet_type.dart';
 
+// Extension for color darkening for realistic shading
+extension ColorX on Color {
+  Color darker(double factor) {
+    return Color.fromARGB(
+      alpha,
+      (red * (1 - factor)).round(),
+      (green * (1 - factor)).round(),
+      (blue * (1 - factor)).round(),
+    );
+  }
+}
+
 /// Advanced "Claymation / Soft 3D" pet visual per the new spec.
 /// - No placeholders: fully procedural toon/clay aesthetic.
 /// - Growth morph: growthProgress (0.0 baby -> 1.0 adult) lerps proportions (blend-shape approximation).
@@ -218,55 +230,78 @@ class _ClayPetPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height * 0.52);
     final progress = growth;
 
-    // Base clay color per species + mood tint
+    // Base clay color per species + mood tint - more realistic soft pastel with depth
     Color baseClay = _getBaseClayColor();
     if (mood == 'sad' || mood == 'starving') {
-      baseClay = Color.lerp(baseClay, Colors.grey.shade400, 0.25)!;
+      baseClay = Color.lerp(baseClay, const Color(0xFF8B7355), 0.3)!;
+    } else if (mood == 'ecstatic') {
+      baseClay = Color.lerp(baseClay, const Color(0xFFFFE4C4), 0.15)!;
     }
 
-    // Growth morph: baby = squishy/round, adult = more defined proportions
+    // Growth morph: baby = squishy/round, adult = more defined proportions - more realistic proportions
     final babyFactor = (1 - progress);
-    final bodyScaleX = 1.0 + (petType == PetType.whale ? progress * 0.35 : progress * 0.15);
-    final bodyScaleY = 0.85 + progress * 0.25;
+    final bodyScaleX = 1.0 + (petType == PetType.whale ? progress * 0.4 : progress * 0.2);
+    final bodyScaleY = 0.9 + progress * 0.3;
 
-    // Soft multiple shadows for clay depth (toon/claymation feel)
+    // Soft multiple shadows for clay depth (toon/claymation feel) - more layers for 3D look
     _drawClayShadow(canvas, center, size, baseClay, bodyScaleX, bodyScaleY, babyFactor);
 
-    // Main body
+    // Main body with gradient for "real clay" texture
     final bodyPath = _buildBodyPath(center, size, bodyScaleX, bodyScaleY, petType, progress);
     final bodyPaint = Paint()
       ..color = baseClay
-      ..style = PaintingStyle.fill;
+      ..style = PaintingStyle.fill
+      ..shader = ui.Gradient.radial(
+        center.translate(0, -10), size.width * 0.6,
+        [baseClay, baseClay.withOpacity(0.7), baseClay.darker(0.2)],
+        [0.0, 0.6, 1.0],
+      );
     canvas.drawPath(bodyPath, bodyPaint);
 
-    // Toon rim / soft edge
+    // Toon rim / soft edge with highlight for 3D
     final rimPaint = Paint()
-      ..color = baseClay.withOpacity(0.6)
+      ..color = baseClay.darker(0.3).withOpacity(0.8)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 6;
+      ..strokeWidth = 8;
     canvas.drawPath(bodyPath, rimPaint);
 
-    // Face / features (morph with growth + mood)
+    // Inner highlight for clay shine
+    final highlightPaint = Paint()
+      ..color = Colors.white.withOpacity(0.2)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3;
+    canvas.drawPath(bodyPath, highlightPaint);
+
+    // Face / features (morph with growth + mood) - more realistic eyes, nose, mouth
     _drawFace(canvas, center, size, progress, mood, isSleeping, happiness, petType);
 
-    // Species details (horns/ears for cow, spout/tail for whale, pattern for snake)
+    // Species details (horns/ears for cow, spout/tail for whale, pattern for snake) - more detailed
     _drawSpeciesDetails(canvas, center, size, progress, baseClay, petType);
 
-    // Hygiene "mess" overlay if low
+    // Hygiene "mess" overlay if low - more realistic dust/particles
     if (hygiene < 45) {
-      final messPaint = Paint()..color = Colors.brown.withOpacity(0.15);
-      canvas.drawCircle(center.translate(0, 8), size.width * 0.18, messPaint);
+      final messPaint = Paint()..color = Colors.brown.withOpacity(0.2);
+      for (int i = 0; i < 5; i++) {
+        final offset = Offset(
+          (i - 2) * 15.0 + (progress * 5),
+          5 + (i % 2) * 8,
+        );
+        canvas.drawOval(
+          Rect.fromCenter(center: center.translate(offset.dx, offset.dy), width: 12, height: 8),
+          messPaint,
+        );
+      }
     }
 
-    // Groom highlight (soft clay "brushed" area)
+    // Groom highlight (soft clay "brushed" area) - more visible effect
     if (groomFlash > 0.05 && groomZone != null) {
       final highlightCenter = groomZone == 'head'
           ? center.translate(0, -size.height * 0.12)
           : center.translate(0, size.height * 0.08);
       final hlPaint = Paint()
-        ..color = Colors.white.withOpacity(groomFlash * 0.45)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
-      canvas.drawCircle(highlightCenter, size.width * 0.22, hlPaint);
+        ..color = Colors.white.withOpacity(groomFlash * 0.6)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
+      canvas.drawCircle(highlightCenter, size.width * 0.25, hlPaint);
     }
   }
 

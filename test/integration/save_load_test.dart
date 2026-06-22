@@ -26,6 +26,12 @@ void main() {
         level: 4,
         xp: 55,
         evolutionStage: 'adult',
+        growthStage: 2,
+        growthProgress: 1.0,
+        interactionCount: 200,
+        currentEnvironment: 'cave',
+        gifts: [],
+        unlockedEnvironments: ['cave'],
         isSleeping: true,
         inventory: [
           {'itemId': 'mice', 'quantity': 2}
