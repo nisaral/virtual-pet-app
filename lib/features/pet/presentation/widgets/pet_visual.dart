@@ -367,16 +367,18 @@ class _ClayPetPainter extends CustomPainter {
         Radius.circular(42 + prog * 8),
       ));
     } else {
-      // Snake: long curved body that gets longer and more elegant
-      final len = w * (1.1 + prog * 0.7);
+      // Snake: improved long curved body for better look (not distorted)
+      final len = w * (1.2 + prog * 0.8);
+      final thickness = 20 + prog * 10;
+      // Main body as thick curve
       path.moveTo(c.dx - len * 0.5, c.dy);
-      path.quadraticBezierTo(c.dx, c.dy - 22 - prog * 8, c.dx + len * 0.52, c.dy + prog * 6);
-      path.quadraticBezierTo(c.dx + len * 0.2, c.dy + 18, c.dx - len * 0.3, c.dy);
-      path.close();
-      // Thicken
-      final thick = Path()..addPath(path, Offset.zero);
-      // Simple fill approximation
-      path.addOval(Rect.fromCenter(center: c.translate(len * 0.1, 0), width: 38, height: 26));
+      path.quadraticBezierTo(c.dx - len * 0.2, c.dy - thickness * 0.6, c.dx + len * 0.3, c.dy - thickness * 0.3 * prog);
+      path.quadraticBezierTo(c.dx + len * 0.6, c.dy, c.dx + len * 0.5, c.dy + thickness * 0.2);
+      // Head
+      path.addOval(Rect.fromCenter(center: c.translate(len * 0.45, 0), width: thickness * 1.2, height: thickness * 0.8));
+      // Eye
+      final eyePaint = Paint()..color = Colors.black;
+      canvas.drawCircle(c.translate(len * 0.55, -thickness * 0.2), 3, eyePaint);
     }
     return path;
   }

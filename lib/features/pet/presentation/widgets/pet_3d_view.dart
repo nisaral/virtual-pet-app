@@ -39,7 +39,7 @@ class Pet3DView extends StatelessWidget {
             ? 'assets/models/cow_small.glb'
             : 'assets/models/cow_big.glb';
       case PetType.snake:
-        return ''; // no model yet - fallback
+        return ''; // no model yet - fallback to 2D
     }
   }
 
@@ -71,6 +71,10 @@ class Pet3DView extends StatelessWidget {
         autoRotate: false,
         animationName: _animationName,
         backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+        // For fast render and nice view with your models
+        cameraOrbit: '0deg 75deg 1.5m',
+        disableZoom: true,
+        // The model will show your real 3D with the animations (idle/run/dying)
       ),
     );
   }

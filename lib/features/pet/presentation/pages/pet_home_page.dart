@@ -11,6 +11,7 @@ import 'package:virtual_pet_app/features/pet/domain/models/pet_type.dart';
 import 'package:virtual_pet_app/features/mini_games/target_catch_game.dart';
 import 'package:virtual_pet_app/features/mini_games/weed_pull_game.dart';
 import 'package:virtual_pet_app/features/mini_games/maze_chase_game.dart';
+import 'package:virtual_pet_app/features/mini_games/whale_rush_game.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 // Note: For Unity pivot, these games become Unity scenes launched via the embedded view (raycast etc.).
@@ -144,7 +145,7 @@ class PetHomePage extends ConsumerWidget {
                       onPressed: () {
                         ref.read(petControllerProvider.notifier).performAction('play');
                         ref.read(petControllerProvider.notifier).awardGift('shell');
-                        showDialog(context: context, builder: (_) => const TargetCatchGame());
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const TargetCatchGame()));
                       },
                       icon: const Icon(Icons.bubble_chart),
                       label: const Text('Target Catch (Whale - Bubble Focus calm)'),
@@ -153,7 +154,7 @@ class PetHomePage extends ConsumerWidget {
                       onPressed: () {
                         ref.read(petControllerProvider.notifier).performAction('clean');
                         ref.read(petControllerProvider.notifier).awardGift('flower');
-                        showDialog(context: context, builder: (_) => const WeedPullGame());
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const WeedPullGame()));
                       },
                       icon: const Icon(Icons.grass),
                       label: const Text('Weed Pull (Cow - Calm Graze mindful)'),
@@ -162,7 +163,7 @@ class PetHomePage extends ConsumerWidget {
                       onPressed: () {
                         ref.read(petControllerProvider.notifier).performAction('play');
                         ref.read(petControllerProvider.notifier).awardGift('treat');
-                        showDialog(context: context, builder: (_) => const MazeChaseGame());
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const MazeChaseGame()));
                       },
                       icon: const Icon(Icons.route),
                       label: const Text('Maze Chase (Snake - Steady Coil precision)'),
