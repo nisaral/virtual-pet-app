@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:virtual_pet_app/features/pet/domain/models/pet_state.dart';
 import 'package:virtual_pet_app/features/pet/domain/models/pet_type.dart';
+import 'package:virtual_pet_app/features/pet/presentation/widgets/pet_visual.dart'; // fallback to 2D for snake or missing model
 
 /// 3D Pet View using model_viewer_plus for user-provided .glb models.
 /// 
@@ -31,15 +32,14 @@ class Pet3DView extends StatelessWidget {
   String get _modelPath {
     switch (pet.petType) {
       case PetType.whale:
-        return 'assets/models/whale.glb'; // your rigged whale with idle/run/dying + blinking blendshape
+        return 'assets/models/whale.glb'; // your model with idle, run, dying + blinking blendshape
       case PetType.cow:
-        // Switch models based on growth (not hardcoded) - your small and big cow models
+        // your two cow models - switch by growth (not hardcoded)
         return pet.growthStage == 0 || pet.growthProgress < 0.5
             ? 'assets/models/cow_small.glb'
             : 'assets/models/cow_big.glb';
       case PetType.snake:
-        // Fallback until you add snake.glb (your whale/cow are real 3D)
-        return ''; // will show alt / fallback in parent
+        return ''; // no model yet - fallback
     }
   }
 
@@ -56,12 +56,11 @@ class Pet3DView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (pet.petType == PetType.snake || _modelPath.isEmpty) {
-      // Fallback to 2D clay (realistic shading) until snake.glb added.
-      // Your whale and cow models are real rigged 3D with the animations you described.
+      // Fallback to 2D (enhanced realistic clay shading) until snake.glb
       return PetVisual(pet: pet);
     }
-    // Real 3D: your models (whale with idle/run/dying + blinking blendshape, cow small/big).
-    // Animation driven by pet state (not hardcoded). Blendshape plays as per model.
+    // Real 3D: your whale (animations + blendshape), cow small/big models.
+    // Animation from state to match your clips (idle/run/dying) - not hardcoded.
     return SizedBox(
       width: width,
       height: height,

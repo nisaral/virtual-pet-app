@@ -41,8 +41,8 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     // Record the "talk" action (creates memory)
     await controller.performAction('talk');
 
-    // Generate reply using RAG + mock LLM
-    final result = LLMChatService.generateReply(pet: pet, userMessage: text);
+    // Generate reply using RAG + real LLM (OpenRouter)
+    final result = await LLMChatService.generateReply(pet: pet, userMessage: text);
 
     // Add a memory of the conversation itself (so future retrieval sees it)
     // (the controller already created a 'talk' memory; we could enhance here)
