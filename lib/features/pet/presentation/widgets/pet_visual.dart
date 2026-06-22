@@ -376,9 +376,6 @@ class _ClayPetPainter extends CustomPainter {
       path.quadraticBezierTo(c.dx + len * 0.6, c.dy, c.dx + len * 0.5, c.dy + thickness * 0.2);
       // Head
       path.addOval(Rect.fromCenter(center: c.translate(len * 0.45, 0), width: thickness * 1.2, height: thickness * 0.8));
-      // Eye
-      final eyePaint = Paint()..color = Colors.black;
-      canvas.drawCircle(c.translate(len * 0.55, -thickness * 0.2), 3, eyePaint);
     }
     return path;
   }
@@ -452,11 +449,14 @@ class _ClayPetPainter extends CustomPainter {
       canvas.drawCircle(c.translate(-8, 2), 7, spot);
       canvas.drawCircle(c.translate(14, -6), 5, spot);
     } else {
-      // Snake pattern / tongue hint
+      // Snake pattern / tongue hint + eye for better look
       final pattern = Paint()..color = clay.withOpacity(0.4);
       for (int i = -1; i <= 1; i++) {
         canvas.drawCircle(c.translate(8.0 * i, 2), 3.5, pattern);
       }
+      // Eye
+      final eyePaint = Paint()..color = Colors.black;
+      canvas.drawCircle(c.translate(s.width * 0.22, -s.height * 0.05), 3, eyePaint);
     }
   }
 
