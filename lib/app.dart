@@ -17,7 +17,7 @@ class VirtualPetApp extends StatelessWidget {
         ),
         useMaterial3: true,
         // Cute, soft feel
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: 2,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:virtual_pet_app/features/pet/domain/models/pet_state.dart';
 import 'package:virtual_pet_app/features/pet/domain/models/pet_type.dart';
 import 'package:virtual_pet_app/features/pet/presentation/widgets/pet_visual.dart'; // fallback to 2D for snake or missing model
@@ -55,27 +54,6 @@ class Pet3DView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (pet.petType == PetType.snake || _modelPath.isEmpty) {
-      // Fallback to 2D (enhanced realistic clay shading) until snake.glb
-      return PetVisual(pet: pet);
-    }
-    // Real 3D: your whale (animations + blendshape), cow small/big models.
-    // Animation from state to match your clips (idle/run/dying) - not hardcoded.
-    return SizedBox(
-      width: width,
-      height: height,
-      child: ModelViewer(
-        src: _modelPath,
-        alt: '${pet.name} the ${pet.petType.displayName}',
-        ar: false,
-        autoRotate: false,
-        animationName: _animationName,
-        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-        // For fast render and nice view with your models
-        cameraOrbit: '0deg 75deg 1.5m',
-        disableZoom: true,
-        // The model will show your real 3D with the animations (idle/run/dying)
-      ),
-    );
+    return PetVisual(pet: pet);
   }
 }

@@ -1,7 +1,7 @@
 name: virtual_pet_app
-description: "Cross-platform virtual pet app (Whale / Cow / Snake) with persistent state and RAG memory."
+description: "Lumina Vale — raise a kin that learns the shape of your days."
 publish_to: 'none'
-version: 0.1.0+1
+version: 1.0.0+1
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
@@ -38,7 +38,7 @@ dependencies:
 
   # Enhancements per UI/UX spec (post-phone testing pivot to 3D)
   # vibration removed (use built-in HapticFeedback - already in grooming code)
-  audioplayers: ^6.0.0       # Sounds for mini-games/growth (add assets later)
+  audioplayers: ^6.0.0
 
   # For Unity pivot (3D pet + habitat embedding)
   # flutter_unity_widget: ^0.2.0  # Embed Unity 3D scene (requires separate Unity export + flutter_unity_widget setup)
@@ -47,12 +47,6 @@ dependencies:
   # For real-time weather events (stub for now; enable with API key)
   # geolocator: ^11.0.0
   # http: ^1.0.0  # for weather API calls (e.g., openweathermap)
-
-  # 3D models support (for user-provided .glb animal models)
-  model_viewer_plus: ^1.8.0
-
-  # For real LLM via OpenRouter (user provided keys)
-  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
@@ -68,11 +62,20 @@ flutter:
   uses-material-design: true
 
   assets:
-    # Add Rive files here once created: assets/rive/pet_whale.riv etc.
-    # - assets/rive/
-    - assets/images/
     - assets/data/
-    - assets/models/   # 3D .glb models (whale.glb, cow_small.glb, cow_big.glb, etc.)
-    - assets/sounds/   # Action sounds, ADHD mini-game sounds (calming tones, etc.)
 
-  # Example fonts or other as needed later
+  fonts:
+    - family: Fredoka
+      fonts:
+        - asset: assets/fonts/Fredoka-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Fredoka-SemiBold.ttf
+          weight: 600
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Nunito-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Nunito-Bold.ttf
+          weight: 700

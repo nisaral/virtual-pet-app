@@ -147,13 +147,14 @@ class PetSimulator {
 
   /// Compute a simple mood string from current stats (used in UI + RAG prompt).
   static String computeMood(Stats stats) {
-    final avg = stats.average;
+    // Hunger is "needs food", so a low number is the comfortable side.
+    final comfort = ((100 - stats.hunger) + stats.happiness + stats.cleanliness + stats.energy + stats.affection) / 5;
     if (stats.hunger > 85) return 'starving';
     if (stats.cleanliness < 15) return 'filthy';
-    if (avg > 82) return 'ecstatic';
-    if (avg > 68) return 'happy';
-    if (avg > 48) return 'content';
-    if (avg > 28) return 'restless';
+    if (comfort > 82) return 'ecstatic';
+    if (comfort > 68) return 'happy';
+    if (comfort > 48) return 'content';
+    if (comfort > 28) return 'restless';
     return 'sad';
   }
 

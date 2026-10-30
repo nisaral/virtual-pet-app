@@ -1,14 +1,31 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:virtual_pet_app/features/pet/data/datasources/local_pet_datasource.dart';
 import 'package:virtual_pet_app/features/pet/domain/models/pet_state.dart';
 import 'package:virtual_pet_app/features/pet/domain/models/pet_type.dart';
 import 'package:virtual_pet_app/features/pet/domain/models/stats.dart';
 
+class _DocsPath extends PathProviderPlatform {
+  _DocsPath(this.documents);
+
+  final String documents;
+
+  @override
+  Future<String?> getApplicationDocumentsPath() async => documents;
+}
+
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('LocalPetDataSource (JSON persistence roundtrip)', () {
     late LocalPetDataSource ds;
+    late Directory temp;
 
-    setUp(() {
+    setUp(() async {
+      temp = await Directory.systemTemp.createTemp('lumina-pet-test');
+      PathProviderPlatform.instance = _DocsPath(temp.path);
       ds = LocalPetDataSource();
     });
 
@@ -54,10 +71,12 @@ void main() {
     });
 
     tearDown(() async {
-      // Best effort cleanup of test file (not critical)
       try {
         await ds.clear();
       } catch (_) {}
+      if (temp.existsSync()) {
+        temp.deleteSync(recursive: true);
+      }
     });
   });
 }
