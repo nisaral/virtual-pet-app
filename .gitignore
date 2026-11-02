@@ -46,3 +46,40 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Secrets
+.env
+.env.*
+
+# Unity
+game/[Ll]ibrary/
+game/[Tt]emp/
+game/[Oo]bj/
+game/[Bb]uild/
+game/[Bb]uilds/
+game/[Ll]ogs/
+game/[Uu]ser[Ss]ettings/
+game/*.csproj
+game/*.sln
+game/*.suo
+game/*.user
+game/*.unityproj
+game/*.pidb
+game/*.booproj
+game/*.svd
+game/*.pdb
+game/*.mdb
+game/*.opendb
+game/*.VC.db
+game/*.apk
+game/*.aab
+game/sysinfo.txt
+game/crashlytics-buildid.txt
+game/Assets/AssetStoreTools*
+game/*.log
+
+# Built APKs (attach to releases instead)
+*.apk
+game/.utmp/
+game/Assets/_Recovery/
+game/Assets/_Recovery.meta

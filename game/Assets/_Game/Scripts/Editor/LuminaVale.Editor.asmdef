@@ -1,0 +1,11 @@
+{
+  "name": "LuminaVale.Editor",
+  "rootNamespace": "LuminaVale.EditorTools",
+  "references": [
+    "LuminaVale",
+    "Unity.RenderPipelines.Universal.Runtime",
+    "Unity.RenderPipelines.Core.Runtime"
+  ],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": false
+}

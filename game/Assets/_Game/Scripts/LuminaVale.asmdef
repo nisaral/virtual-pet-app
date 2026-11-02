@@ -1,0 +1,14 @@
+{
+  "name": "LuminaVale",
+  "rootNamespace": "LuminaVale",
+  "references": [
+    "Unity.InputSystem",
+    "Unity.RenderPipelines.Universal.Runtime",
+    "Unity.RenderPipelines.Core.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true,
+  "noEngineReferences": false
+}

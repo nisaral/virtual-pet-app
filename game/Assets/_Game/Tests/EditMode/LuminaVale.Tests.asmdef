@@ -1,0 +1,9 @@
+{
+  "name": "LuminaVale.Tests",
+  "references": ["LuminaVale", "UnityEngine.TestRunner", "UnityEditor.TestRunner"],
+  "includePlatforms": ["Editor"],
+  "precompiledReferences": ["nunit.framework.dll", "Newtonsoft.Json.dll"],
+  "overrideReferences": true,
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "autoReferenced": false
+}
